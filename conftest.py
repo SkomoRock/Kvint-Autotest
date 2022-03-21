@@ -1,7 +1,6 @@
 import pytest
 from selenium import webdriver
 
-# only for chrome browser
 @pytest.fixture(scope = 'function')
 def browser():
     tuning = webdriver.ChromeOptions()
