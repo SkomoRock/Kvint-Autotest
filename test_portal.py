@@ -8,9 +8,9 @@ def test_user_login(browser):
     page.open_page()
     page.user_login()
 
-def test_script_archiving_megafon(browser):
+def test_megafon_script_archiving(browser):
     page = ExtendedSet(browser, LoginLocator.LOGIN_LINK)
     page.go_to_megafon_project()
     page.go_to_megafon_script()
-    page.archiving_megaphone_script()
-    page.unarchiving_megaphone_script()
+    page.megafon_script_archiving()
+    page.megafon_script_unarchiving()

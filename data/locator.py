@@ -16,7 +16,7 @@ class ProjectLocator():
         (By.XPATH, '//*[@id="app"]/section/section/div/span[1]/span[1]')
 
 class ScriptLocator():
-    SCRIPT_MEGAFON_ID = '1647507561'
+    SCRIPT_MEGAFON_ID = '1647939578'
     SCRIPT_MEGAFON_SELECT = \
         (By.XPATH, f'//tr[.//span[text()={SCRIPT_MEGAFON_ID}]]//input')
     SCRIPT_MEGAFON_ALL = \
@@ -24,7 +24,10 @@ class ScriptLocator():
     SCRIPT_DELETE = (By.XPATH, '//button[span[text()="Delete"]]')
     SCRIPT_ARCHIVE = (By.XPATH, '//button[span[text()="Archive"]]')
     SCRIPT_UNARCHIVE = (By.XPATH, '//button[span[text()="UnArchive"]]')
-    SCRIPT_ALERT_OK = (By.XPATH, '//button[span[text()="OK"]]')
-    SCRIPT_SHOW_ARCHIVED = (By.CSS_SELECTOR, 'button[role="switch"]')
+    SCRIPT_CONFIRM_ARCHIVE = \
+        (By.TAG_NAME, 'button[data-test-id="btn-confirm-archive"]')
+    SCRIPT_CONFIRM_UNARCHIVE = \
+        (By.TAG_NAME, 'button[data-test-id="btn-confirm-unarchive"]')
+    SCRIPT_SHOW_ARCHIVED = (By.CSS_SELECTOR, 'button.ant-switch')
     SCRIPT_PAGE_MARKER = \
         (By.XPATH, '//*[@id="app"]/section/section/div/span[2]/span')

@@ -14,24 +14,24 @@ class ExtendedSet(MainSet):
     def go_to_megafon_script(self):
         self.find_and_click(*ScriptLocator.SCRIPT_MEGAFON_ALL)
         assert self.text_present(*ScriptLocator.SCRIPT_PAGE_MARKER, 'Scripts')\
-                ,'Megafon script page NOT FOUND'
+            ,'Megafon script page NOT FOUND'
 
-    def archiving_megaphone_script(self):
+    def megafon_script_archiving(self):
         self.find_and_mark_checkbox(*ScriptLocator.SCRIPT_MEGAFON_SELECT)
         assert self.element_active(*ScriptLocator.SCRIPT_DELETE)\
             ,'Delete button NOT ACTIVE'
         self.find_and_click(*ScriptLocator.SCRIPT_ARCHIVE)
-        self.find_and_click(*ScriptLocator.SCRIPT_ALERT_OK)
+        self.find_and_click(*ScriptLocator.SCRIPT_CONFIRM_ARCHIVE)
         assert self.element_not_present\
             (*ScriptLocator.SCRIPT_MEGAFON_SELECT),'Megafon script NOT ARCHIVED'
 
-    def unarchiving_megaphone_script(self):
+    def megafon_script_unarchiving(self):
         self.find_and_click(*ScriptLocator.SCRIPT_SHOW_ARCHIVED)
         self.find_and_mark_checkbox(*ScriptLocator.SCRIPT_MEGAFON_SELECT)
         assert self.element_active(*ScriptLocator.SCRIPT_DELETE)\
             ,'Delete button NOT ACTIVE'
         self.find_and_click(*ScriptLocator.SCRIPT_UNARCHIVE)
-        self.find_and_click(*ScriptLocator.SCRIPT_ALERT_OK)
+        self.find_and_click(*ScriptLocator.SCRIPT_CONFIRM_UNARCHIVE)
         assert self.element_disappeared\
             (*ScriptLocator.SCRIPT_MEGAFON_SELECT),'Megafon script NOT UNARCHIVED'
         self.find_and_click(*ScriptLocator.SCRIPT_SHOW_ARCHIVED)
