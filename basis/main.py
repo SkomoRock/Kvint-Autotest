@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 from data.locator import LoginLocator
+from data.locator import SidebarLocator
+from data.locator import MarkerLocator
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
@@ -18,6 +20,10 @@ class MainSet():
         self.browser = browser
         self.url = url
         self.browser.implicitly_wait(timeout)
+ 
+    def open_page(self):
+        self.browser.get(self.url)
+        assert self.url in self.browser.current_url, 'Page NOT OPEN'
 
     def element_active(self, how, what, timeout = 4):
         try: WebDriverWait(self.browser, timeout)\
@@ -42,11 +48,34 @@ class MainSet():
         except TimeoutException: return False
         return True
 
-    def text_present(self, how, what, text):
-        try: line = self.browser.find_element(how, what).text
-        finally:
-            if line == text: return True
-            else: return False
+    def text_present(self, how, what, text, timeout = 4):
+        assert self.element_present(how, what), 'Page element NOT FOUND'
+        try: WebDriverWait(self.browser, timeout).until_not\
+            (EC.text_to_be_present_in_element((how, what), 'Loading...'))
+        except TimeoutException:
+            raise AssertionError('Checked text NOT READY')
+        line = self.browser.find_element(how, what).text
+        print('Text check started')
+        print('Expected text: ', text)
+        print('Actual text:   ', line)
+        if line == text: return True
+        else: return False
+
+    def check_marker_user_login(self):
+        assert self.element_present(*MarkerLocator.MARKER_USER_LOGIN)\
+            ,'User NOT AUTHORIZED'
+
+    def check_marker_project(self, text):
+        assert self.text_present(*MarkerLocator.MARKER_PROJECT, text + '·')\
+            ,f'{text} project NOT FOUND'
+
+    def check_marker_section(self, text):
+        assert self.text_present(*MarkerLocator.MARKER_SECTION, text)\
+            ,f'{text} section NOT FOUND'
+
+    def check_marker_subsection(self, text):
+        assert self.text_present(*MarkerLocator.MARKER_SUBSECTION, '·' + text)\
+            ,f'{text} subsection NOT FOUND'
 
     def find_and_click(self, how, what):
         assert self.element_present(how, what), 'Page element NOT FOUND'
@@ -71,15 +100,15 @@ class MainSet():
         action.move_to_element(target).click()
         action.perform()
 
-    def open_page(self):
-        try: self.browser.get(self.url)
-        finally: assert self.url in self.browser.current_url, 'Page NOT OPEN'
-
     def user_login(self):
-        try:
-            self.find_and_send_keys(*LoginLocator.LOGIN_USERNAME, TEST_USERNAME)
-            self.find_and_send_keys(*LoginLocator.LOGIN_PASSWORD, TEST_PASSWORD)
-            self.find_and_click(*LoginLocator.LOGIN_SUBMIT)
-        finally:
-            assert self.element_present(*LoginLocator.LOGIN_USER_MARKER)\
-                ,'User NOT AUTHORIZED'
+        self.find_and_send_keys(*LoginLocator.LOGIN_USERNAME, TEST_USERNAME)
+        self.find_and_send_keys(*LoginLocator.LOGIN_PASSWORD, TEST_PASSWORD)
+        self.find_and_click(*LoginLocator.LOGIN_SUBMIT)
+        self.check_marker_user_login()
+
+    def sidebar_click_scripts(self):
+        self.find_and_click(*SidebarLocator.SIDEBAR_DIALOGUE)
+
+    def sidebar_click_builds(self):
+        self.find_and_click(*SidebarLocator.SIDEBAR_AGENT)
+        self.find_and_click(*SidebarLocator.SIDEBAR_BUILDS)

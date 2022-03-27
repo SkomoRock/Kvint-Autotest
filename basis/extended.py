@@ -1,39 +1,51 @@
 from .main import MainSet
-from data.locator import ScriptLocator
+from data.locator import HistoryLocator
+from data.locator import MegafonLocator
+from data.locator import PaginationLocator
 from data.locator import ProjectLocator
+from data.locator import ScriptLocator
 
 class ExtendedSet(MainSet):
 
-    def go_to_megafon_project(self):
+    def go_to_megafon_from_main_page(self):
         self.find_and_click(*ProjectLocator.PROJECT_MENU)
         self.find_and_click(*ProjectLocator.PROJECT_ALL)
         self.find_and_click(*ProjectLocator.PROJECT_MEGAFON)
-        assert self.text_present(*ProjectLocator.PROJECT_PAGE_MARKER, 'megafon')\
-            ,'Megafon project page NOT FOUND'
+        self.check_marker_project('megafon')
 
-    def go_to_megafon_script(self):
-        self.find_and_click(*ScriptLocator.SCRIPT_MEGAFON_ALL)
-        assert self.text_present(*ScriptLocator.SCRIPT_PAGE_MARKER, 'Scripts')\
-            ,'Megafon script page NOT FOUND'
+    def check_number_of_megafon_total_calls(self):
+        self.find_and_click(*HistoryLocator.CALL_STATUS_MENU)
+        self.find_and_click(*HistoryLocator.CALL_STATUS_RESET)
+        assert self.text_present(*PaginationLocator.TOTAL_ITEMS\
+            ,MegafonLocator.MEGAFON_TOTAL_CALLS)\
+            ,'Number of Megafon successful calls DOES NOT MATCH'
 
-    def megafon_script_archiving(self):
-        self.find_and_mark_checkbox(*ScriptLocator.SCRIPT_MEGAFON_SELECT)
+    def check_number_of_megafon_success_calls(self):
+        self.find_and_click(*HistoryLocator.CALL_STATUS_MENU)
+        self.find_and_mark_checkbox(*HistoryLocator.CALL_STATUS_SUCCESS)
+        self.find_and_click(*HistoryLocator.CALL_STATUS_OK)
+        assert self.text_present(*PaginationLocator.TOTAL_ITEMS\
+            ,MegafonLocator.MEGAFON_SUCCESS_CALLS)\
+            ,'Number of Megafon successful calls DOES NOT MATCH'
+
+    def start_megafon_script_archiving(self):
+        self.find_and_mark_checkbox(*MegafonLocator.MEGAFON_SCRIPT_SELECT)
         assert self.element_active(*ScriptLocator.SCRIPT_DELETE)\
             ,'Delete button NOT ACTIVE'
         self.find_and_click(*ScriptLocator.SCRIPT_ARCHIVE)
         self.find_and_click(*ScriptLocator.SCRIPT_CONFIRM_ARCHIVE)
         assert self.element_not_present\
-            (*ScriptLocator.SCRIPT_MEGAFON_SELECT),'Megafon script NOT ARCHIVED'
+            (*MegafonLocator.MEGAFON_SCRIPT_SELECT),'Megafon script NOT ARCHIVED'
 
-    def megafon_script_unarchiving(self):
+    def start_megafon_script_unarchiving(self):
         self.find_and_click(*ScriptLocator.SCRIPT_SHOW_ARCHIVED)
-        self.find_and_mark_checkbox(*ScriptLocator.SCRIPT_MEGAFON_SELECT)
+        self.find_and_mark_checkbox(*MegafonLocator.MEGAFON_SCRIPT_SELECT)
         assert self.element_active(*ScriptLocator.SCRIPT_DELETE)\
             ,'Delete button NOT ACTIVE'
         self.find_and_click(*ScriptLocator.SCRIPT_UNARCHIVE)
         self.find_and_click(*ScriptLocator.SCRIPT_CONFIRM_UNARCHIVE)
         assert self.element_disappeared\
-            (*ScriptLocator.SCRIPT_MEGAFON_SELECT),'Megafon script NOT UNARCHIVED'
+            (*MegafonLocator.MEGAFON_SCRIPT_SELECT),'Megafon script NOT UNARCHIVED'
         self.find_and_click(*ScriptLocator.SCRIPT_SHOW_ARCHIVED)
         assert self.element_present\
-            (*ScriptLocator.SCRIPT_MEGAFON_SELECT),'Megafon script NOT UNARCHIVED'
+            (*MegafonLocator.MEGAFON_SCRIPT_SELECT),'Megafon script NOT UNARCHIVED'
